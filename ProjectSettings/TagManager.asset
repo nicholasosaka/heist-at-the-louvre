@@ -8,13 +8,13 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Visible
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
+  - Wall
+  - Targets
+  - Floor
+  - FieldOfView
   - 
   - 
   - 
