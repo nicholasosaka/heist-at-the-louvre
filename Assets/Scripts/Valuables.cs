@@ -19,12 +19,14 @@ public class Valuables : MonoBehaviour
     [SerializeField] private TileBase emptyStandTileBase;
 
     private List<Vector3> tilePositions;
-    private int score = 0;
+    ScoreHandler scoreHandler;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        scoreHandler = new ScoreHandler();
+
         tilePositions = new List<Vector3>();
 
         BoundsInt.PositionEnumerator positions = valuablesTileMap.cellBounds.allPositionsWithin;
@@ -39,7 +41,7 @@ public class Valuables : MonoBehaviour
         }
 
         treasureTrackerSlider.maxValue = tilePositions.ToArray().Length;
-        Debug.Log(treasureTrackerSlider.maxValue);
+        scoreHandler.SetMax(tilePositions.ToArray().Length);
 
     }
 
@@ -66,8 +68,7 @@ public class Valuables : MonoBehaviour
                 TileBase tileBase = valuablesTileMap.GetTile(cellPosition);
                 if (tileBase.name == valuableTileName) {
                     valuablesTileMap.SetTile(cellPosition, emptyStandTileBase);
-                    score += 1;
-                    treasureTrackerSlider.value = score;
+                    treasureTrackerSlider.value = scoreHandler.Increment();
                     Debug.Log(treasureTrackerSlider.value);
                 }
             }

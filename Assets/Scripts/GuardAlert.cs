@@ -18,9 +18,20 @@ public class GuardAlert : MonoBehaviour
     private float timeSinceAlerted = 0;
     private SpriteRenderer alertSprite;
 
+    Alert alertHandler;
+    private List<Vector3Int> seenStolen;
+
+    private int difficulty;
+
     // Start is called before the first frame update
     void Start()
     {
+
+        difficulty = PlayerPrefs.GetInt("difficulty", 0);
+
+        alertHandler = new Alert();
+
+        seenStolen = new List<Vector3Int>();
 
         alertSprite = alert.GetComponent<SpriteRenderer>();
 
@@ -55,10 +66,12 @@ public class GuardAlert : MonoBehaviour
         if (closestMagnitude < proximityThreshold) { //guard can see a valuable
             Vector3Int cellPosition = valuablesTileMap.WorldToCell(closest);
             TileBase tileBase = valuablesTileMap.GetTile(cellPosition);
-            if (tileBase.name == emptyStandTileBaseName) { //if its been stolen
+            if (tileBase.name == emptyStandTileBaseName && !seenStolen.Contains(cellPosition)) { //if its been stolen
                 alerted = true;
                 Debug.Log("Guard found a stolen stand");
                 timeSinceAlerted = 0;
+                alertHandler.Increment();
+                seenStolen.Add(cellPosition);
             } else {
                 timeSinceAlerted += Time.deltaTime;
                 if (timeSinceAlerted > 5f) {

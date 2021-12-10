@@ -9,21 +9,30 @@ public class MainMenuHandler : MonoBehaviour
     public GameObject Credits;
     public GameObject Instructions;
 
+    //score and alert handlers
+    Alert alertHandler;
+    ScoreHandler scoreHandler;
+
     // Start is called before the first frame update
     void Start()
     {
         ActivateMenu("main");
+        scoreHandler = new ScoreHandler();
+        alertHandler = new Alert();
     }
 
     public void GoToCredits() {
         ActivateMenu("credits");
     }
 
-        public void GoToInstructions() {
+    public void GoToInstructions() {
         ActivateMenu("instructions");
     }
 
     public void GoToGame() {
+        //reset score and alert pre-game
+        scoreHandler.Reset();
+        alertHandler.Reset();
         UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
     }
 

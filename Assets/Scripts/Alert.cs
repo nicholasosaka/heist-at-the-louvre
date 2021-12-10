@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class Alert {
     private static int alertLevel = 0;
+    private static int max = 5;
 
     public int GetAlertLevel()  { 
         return alertLevel;
@@ -14,8 +15,8 @@ public class Alert {
     public int Increment() {
         Debug.Log("Incrementing alert");
         alertLevel++;
-        if(alertLevel > 5) {
-            alertLevel = 5;
+        if(alertLevel > max) {
+            alertLevel = max;
         }
         return alertLevel;
     }
@@ -26,6 +27,14 @@ public class Alert {
             alertLevel = 0;
         }
         return alertLevel;
+    }
+
+    public int Max() {
+        return max;
+    }
+
+    public void Reset() {
+        alertLevel = 0;
     }
 
 }
