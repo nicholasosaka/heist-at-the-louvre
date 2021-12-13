@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GuardMovement : MonoBehaviour
+public class GuardMovement : KinematicMover
 {
 
-    [SerializeField] private float movementSpeedModifier;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] Animator animator;
     [SerializeField] private Transform guardTransform;
@@ -13,63 +12,59 @@ public class GuardMovement : MonoBehaviour
     [SerializeField] private GameObject pathParent;
     [SerializeField] private float safetyMargin;
 
-    private List<Vector3> pathNodes;
+    private List<Vector3> waypoints;
+    KinematicSteering steering;
     
-    private float interpolationValue;
-    private int goalNodeIndex;
+    private int goalWaypointIndex;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        pathNodes = new List<Vector3>();
+
+        steering = new KinematicSteering();
+
+        waypoints = new List<Vector3>();
         //get all nodes
         for(int i = 0; i < pathParent.transform.childCount; i++) {
-            pathNodes.Add(pathParent.transform.GetChild(i).position);
+            waypoints.Add(pathParent.transform.GetChild(i).position);
         }
 
-        Debug.Log("Guard path is " + pathNodes.ToArray().Length + " nodes long.");
-
-        interpolationValue = 0;
-        goalNodeIndex = 0;
+        goalWaypointIndex = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        interpolationValue += Time.deltaTime/movementSpeedModifier;
-        float distanceToGoal = (guardTransform.position - pathNodes[goalNodeIndex]).magnitude;
-        if(distanceToGoal > safetyMargin) {
-            Vector3 interpolatedPosition = Vector3.Lerp(guardTransform.position, pathNodes[goalNodeIndex], interpolationValue);
-            
-            Vector2 deltaPosition = interpolatedPosition - guardTransform.position;
-            guardTransform.position = interpolatedPosition;
-
-            //animation
-            animator.SetFloat("Horizontal", deltaPosition.x);
-            animator.SetFloat("Vertical", deltaPosition.y);
-            animator.SetFloat("Speed", deltaPosition.magnitude);
-
-
-            if (deltaPosition.x > 0) { //right
-                animator.SetFloat("IdleDirection", 4);
-            } else if (deltaPosition.x < 0) { //left
-                animator.SetFloat("IdleDirection", 3);
-            } else if (deltaPosition.y > 0) { //up
-                animator.SetFloat("IdleDirection", 2);
-            } else if (deltaPosition.y < 0) {//down
-                animator.SetFloat("IdleDirection", 1);
-            }
-
-        } else {
-            Debug.Log("Goal State");
-            if(goalNodeIndex < pathNodes.ToArray().Length - 1){
-                goalNodeIndex++;
+        float distanceToGoal = (guardTransform.position - waypoints[goalWaypointIndex]).magnitude;
+        if(distanceToGoal < safetyMargin) {
+            if(goalWaypointIndex < waypoints.ToArray().Length - 1){
+                goalWaypointIndex++;
             } else {
-                goalNodeIndex = 0;
+                goalWaypointIndex = 0;
             }
-            interpolationValue = 0;
-
         }
+
+        //animation
+        animator.SetFloat("Horizontal", steering.velocity.x);
+        animator.SetFloat("Vertical", steering.velocity.y);
+        animator.SetFloat("Speed", steering.velocity.magnitude);
+
+
+        if (steering.velocity.x > 0) { //right
+            animator.SetFloat("IdleDirection", 4);
+        } else if (steering.velocity.x < 0) { //left
+            animator.SetFloat("IdleDirection", 3);
+        } else if (steering.velocity.y > 0) { //up
+            animator.SetFloat("IdleDirection", 2);
+        } else if (steering.velocity.y < 0) {//down
+            animator.SetFloat("IdleDirection", 1);
+        }
+
+        steering = GetKinematicSteer(rb.position, waypoints[goalWaypointIndex]);
+    }
+
+    void FixedUpdate() {
+        rb.velocity = steering.velocity;
     }
 }

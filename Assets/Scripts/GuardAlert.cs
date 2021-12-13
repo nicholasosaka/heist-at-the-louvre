@@ -11,6 +11,7 @@ public class GuardAlert : MonoBehaviour
     [SerializeField] private string emptyStandTileBaseName;
     [SerializeField] private float proximityThreshold;
     [SerializeField] private GameObject alert;
+    [SerializeField] private Transform player;
 
 
     private List<Vector3> tilePositions;
@@ -75,7 +76,6 @@ public class GuardAlert : MonoBehaviour
             } else {
                 timeSinceAlerted += Time.deltaTime;
                 if (timeSinceAlerted > 5f) {
-                    Debug.Log("Guard is no logner alerted");
                     alerted = false;
                 }
             }
@@ -85,6 +85,12 @@ public class GuardAlert : MonoBehaviour
             alertSprite.color = new Color(1,1,1,1);
         } else {
             alertSprite.color = new Color(1,1,1,0);
+        }
+
+        float distanceToPlayer = Vector3.Distance(guard.position, player.position);
+        Debug.Log(distanceToPlayer);
+        if(distanceToPlayer < 2f) {
+            alertHandler.MaxAlert();
         }
     }
 }

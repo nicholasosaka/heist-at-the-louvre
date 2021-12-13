@@ -37,4 +37,8 @@ public class Alert {
         alertLevel = 0;
     }
 
+    public void MaxAlert() {
+        alertLevel = max;
+    }
+
 }

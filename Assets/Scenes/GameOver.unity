@@ -951,7 +951,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1000, y: 201.7}
+  m_SizeDelta: {x: 1000, y: 241.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1030180185
 MonoBehaviour:
@@ -996,15 +996,14 @@ MonoBehaviour:
     Nicholas Osaka
 
 
-    Game
-    Music
+    Visual
+    Assets
 
     Nicholas Osaka
 
+    - Wall Image
 
-    Visual Assets
-
-    Nicholas Osaka
+    Sophia Gucciardi
 
 
     Menu

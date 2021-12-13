@@ -15,6 +15,7 @@ public class CameraFoVCollision : MonoBehaviour
 
     [SerializeField] private Color alertedRed;
     [SerializeField] private Color normalYellow;
+    [SerializeField] private Color disabledColor;
 
     Alert alert;
     private bool canIncrementAlertValue;
@@ -42,10 +43,19 @@ public class CameraFoVCollision : MonoBehaviour
             canIncrementAlertValue = true;
         }
 
+        if(CameraController.disabled) {
+            cameraFOVSprite.color = disabledColor;
+        } else {
+            if(isInTriggerArea) {
+                cameraFOVSprite.color = alertedRed;
+            } else if (durationOutsideOfFOV >3f) {
+                cameraFOVSprite.color = normalYellow;
+            }
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other) {
-        if(other.tag == "Player") {
+        if(other.tag == "Player" && !CameraController.disabled) {
             Debug.Log("Enter");
             durationOutsideOfFOV = 0; //reset duration outside counter;
             
